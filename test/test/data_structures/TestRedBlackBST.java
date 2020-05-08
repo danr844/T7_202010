@@ -1,33 +1,23 @@
-package test.logic;
-
-import static org.junit.Assert.*;
-
-import java.io.IOException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+package test.data_structures;
 
 import model.data_structures.Comparendo;
 import model.data_structures.RedBlackBST;
-import model.logic.Modelo;
-
+import static org.junit.Assert.*;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import org.junit.Before;
 import org.junit.Test;
 
-public class TestModelo {
 
-	private Modelo modelo = new Modelo();
+public class TestRedBlackBST {
 	private Comparendo nueva;
 	private Comparendo nueva2;
 	private String fechaS;
 	private String fechaS2;
-	private static final String vertexPath= "./data/bogota_vertices.txt";
-	private static final String EdgesPath= "./data/bogota_arcos.txt";
-	private static final String EstacionesPath= "./data/estacionpolicia.geojson.json";
-	private static final String GraphSavepath = "./data/grafoImpreso.json";
 
 	SimpleDateFormat parser = new SimpleDateFormat("yyyy/MM/dd");
-	public RedBlackBST<Integer,Comparendo> tree = new RedBlackBST<>();
+	RedBlackBST<Integer,Comparendo> tree = new RedBlackBST<>();
 
 
 
@@ -35,7 +25,7 @@ public class TestModelo {
 
 	@Before
 	public void setUp1() throws ParseException {
-		
+
 		fechaS = "2018/01/17";
 		fechaS2 = "2018/01/18";
 		Date fecha = parser.parse(fechaS);
@@ -52,7 +42,7 @@ public class TestModelo {
 	@Test
 	public void testModelo() throws ParseException {
 		setUp1();
-		assertTrue(modelo!=null);
+		assertTrue(tree!=null);
 	}
 
 	@Test
@@ -89,24 +79,61 @@ public class TestModelo {
 	}
 
 	@Test
-	public void testCargarInfoVerticesYArcos() throws ParseException, IOException {
+	public void testDarObjeto() throws ParseException
+	{
 		setUp1();
-		modelo.cargarInfoVertex(vertexPath);
-		modelo.cargarInfoEdges(EdgesPath);
-		assertNotNull("la informacion no fue cargada", modelo.getGraphRead().getEdgeSize());
+		// TODO Completar la prueba
+		assertEquals("El objeto no es el que corresponde", 1234,tree.get(nueva.darID()).darID());
+		assertEquals("El objeto no es el que corresponde", 0000,tree.get(nueva2.darID()).darID());
+		assertNull("El objeto no deberia ser distinto de null", tree.get(nueva.darID()+1));
 	}
 	@Test
-	public void testCargarInfoEstacionesDePolicia() throws ParseException, IOException {
+
+	public void testDarmaximo() throws ParseException
+	{
 		setUp1();
-		modelo.cargarInfoEstacionesPolicia(EstacionesPath);
-		assertNotNull("la informacion no fue cargada", modelo.getEstacionesDePolicia().giveSize());
+		// TODO Completar la prueba
+		assertEquals("El objeto no es el que corresponde", 1234,tree.getMaxValue().darID());
+		assertNotNull("El objeto no deberia ser distinto de null", tree.getMaxValue().darID());
 	}
 	@Test
-	public void testCargarEImprimirGson() throws ParseException, IOException {
+
+	public void testDarMinimo() throws ParseException
+	{
 		setUp1();
-		modelo.saveGraphJson(GraphSavepath);
-		modelo.loadGraphJson(GraphSavepath);
-		assertNotNull("la informacion no fue cargada", modelo.getGraphWrite().getEdgeSize());
+		// TODO Completar la prueba
+		assertEquals("El objeto no es el que corresponde", 0000,tree.getMin().darID());
+		assertNotNull("El objeto no deberia ser distinto de null", tree.getMin().darID());
 	}
+	@Test
+
+	public void testDarAltura() throws ParseException
+	{
+		setUp1();
+		// TODO Completar la prueba
+		assertEquals("la altura no es la que corresponde", 1,tree.height());
+		assertNotNull("El objeto no deberia ser distinto de null", tree.getMin().darID());
+	}
+	@Test
+
+	public void testContiene() throws ParseException
+	{
+		setUp1();
+		// TODO Completar la prueba
+		assertTrue(tree.contains(nueva.darID()));
+		assertTrue(tree.contains(nueva2.darID()));
+		assertFalse(tree.contains(nueva.darID()+1));
+	}
+	@Test
+
+	public void testDarRaiz() throws ParseException
+	{
+		setUp1();
+		// TODO Completar la prueba
+		assertEquals("El objeto no es el esperado",1234 ,tree.giveRoot().val.darID());
+	}
+
+
+
 
 }
