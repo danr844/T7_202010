@@ -83,6 +83,7 @@ public class Modelo
 				String EPOIDENTIF = e.getAsJsonObject().get("properties").getAsJsonObject().get("EPOIDENTIF").getAsString();
 				String EPOFECHA_C = e.getAsJsonObject().get("properties").getAsJsonObject().get("EPOFECHA_C").getAsString();
 				estacionPolicia epo  = new estacionPolicia(id, EPODESCRIP, EPODIR_SITIO, EPOLATITUD, EPOLONGITU, EPOSERVICIO, EPONOMBRE, EPOIDENTIF);
+				estacionesPolRedBlack.put(id, epo);
 			}
 
 		} catch (IOException e) {
