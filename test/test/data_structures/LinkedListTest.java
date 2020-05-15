@@ -5,15 +5,15 @@ import java.text.ParseException;
 import org.junit.Before;
 import org.junit.Test;
 
-import model.data_structures.ListaEncadenada;
+import model.data_structures.LinkedList;
 
 public class LinkedListTest {
 	
-		private ListaEncadenada<Integer>lista;
+		private LinkedList<Integer>lista;
 
 		@Before
 		public void setUp1(){
-			lista = new ListaEncadenada<Integer>();
+			lista = new LinkedList<Integer>();
 			lista.put(1);
 			lista.put(5);
 			lista.put(10);

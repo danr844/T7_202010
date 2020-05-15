@@ -11,13 +11,13 @@ public class Vertex<T extends Comparable<T>, V extends Comparable<V>> implements
 	private Edge<T,V> edge; 
 	private double Distance;
 	
-	private ListaEncadenada<Edge<T, V>> adjacencyList;
+	private LinkedList<Edge<T, V>> adjacencyList;
 
 	
 	public Vertex(T id, V pInfoVertex){
 		idVertex = id;
 		infoVertex = pInfoVertex;
-		adjacencyList = new ListaEncadenada<Edge<T,V>>();
+		adjacencyList = new LinkedList<Edge<T,V>>();
 			
 	}
 	
@@ -73,6 +73,9 @@ public class Vertex<T extends Comparable<T>, V extends Comparable<V>> implements
 	
 	public Iterable<Edge<T,V>>getAdjacencyList(){
 		return adjacencyList.keys();
+	}
+	public int getAdjacencyListSize(){
+		return adjacencyList.size();
 	}
 
 	public Edge<T,V> deleteEdge(T edgeID){

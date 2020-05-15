@@ -21,7 +21,7 @@ public class SeparateChainingHT <K extends Comparable<K>,V extends Comparable<V>
 
 		st=(ListaEncadenada<K, V>[]) new ListaEncadenada[m];
 		for (int i = 0; i < m; i++)
-			st[i] = new ListaEncadenada();
+			st[i] = new ListaEncadenada<K,V>();
 	}
 
 	private void resize(int chains) {

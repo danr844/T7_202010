@@ -1,13 +1,11 @@
 package model.data_structures;
 
-public class ListaEncadenada <Key>
+public class ListaEncadenada <Key extends Comparable<Key>,V> implements ISymbolTable<Key,V> 
 {
 
 	private int n;
 	
-	private Node1<Key> first;
-	private Node1<Key> ultimo; 
-	
+	private LinkedNode<Key, V> first;
 	
 	
 	
@@ -29,52 +27,54 @@ public class ListaEncadenada <Key>
 	    } 
 
 	
-	public Key get(Key k)
+	public V get(Key k)
 	{
-		for(Node1<Key> x=first; x!=null; x=x.next)
+		for(LinkedNode<Key, V> x=first; x!=null; x=x.next)
 		{
 			if(k.equals(x.key))
 			{
-				return x.key;
+				return x.val;
 			}
 		}
 		return null;
 	}
-	public Queue<Key> getAll (Key k){
-		Queue<Key> queue = new Queue<Key>();
-		for(Node1<Key> x=first; x!=null; x=x.next)
+	public Queue<V> getAll (Key k){
+		Queue<V> queue = new Queue<V>();
+		for(LinkedNode<Key, V> x=first; x!=null; x=x.next)
 		{
 			if(k.equals(x.key))
 			{
-				queue.enqueue(x.key);;
+				queue.enqueue(x.val);;
 			}
 		}
 		return queue;
 		
 	}
 	
-	public void put(Key k)
+	public void put(Key k,V v)
 	{
-		Node1<Key>node= new Node1<Key>(k, null);
-		if(first==null){
-			first = node;
-			ultimo = node;
+		
+		for(LinkedNode<Key, V> x=first; x!=null; x=x.next)
+		{
+			if(k.equals(x.key))
+			{
+				x.val=v;
+				return;
+			}
 		}
-		else{
-			ultimo.changeNext(node);
-			ultimo = node;
-		}
+		first= new LinkedNode<Key, V>(k,v,first);
 		n++;
 	}
 	
-	  public Key delete(Key key) 
+	  public V delete(Key key) 
 	    {
+		  	V retorno= get(key);
 	        first = delete(first, key);
-	        return first.key;
+	        return retorno;
 	    }
 
 	    // delete key in linked list beginning at Node x
-	  private Node1<Key> delete(Node1<Key> x, Key key) 
+	  private LinkedNode<Key, V> delete(LinkedNode<Key, V> x, Key key) 
 	  {
 	        if (x == null) return null;
 	        if (key.equals(x.key)) {
@@ -85,10 +85,17 @@ public class ListaEncadenada <Key>
 	        return x;
 	    }
 	    
-	
+	    public Iterable<V> keys1()  {
+	        Queue<V> queue = new Queue<V>();
+	        for (LinkedNode<Key, V> x = first; x != null; x = x.next)
+	            queue.enqueue( x.val);
+	        return queue;
+	    }
+
+		@Override
 		public Iterable<Key> keys()  {
 	        Queue<Key> queue = new Queue<Key>();
-	        for (Node1<Key> x = first; x != null; x = x.next)
+	        for (LinkedNode<Key, V> x = first; x != null; x = x.next)
 	            queue.enqueue( x.key);
 	        return queue;
 	    }
