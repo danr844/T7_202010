@@ -1,9 +1,7 @@
 package model.data_structures;
 import java.util.Iterator;
-import java.util.Stack;
 
-import javax.swing.text.TabExpander;
-
+import jdk.nashorn.internal.runtime.arrays.NumericElements;
 
 
 public class GrafoNoDirigido<T extends Comparable<T>, V extends Comparable<V>> {
@@ -79,6 +77,10 @@ public class GrafoNoDirigido<T extends Comparable<T>, V extends Comparable<V>> {
 
 
 	}
+	public void addVertex(T idVertex, V infoVertex){
+		tableVertex.put(idVertex, new Vertex<T,V>(idVertex, infoVertex));
+		vertexNumber++;
+	}
 
 
 	/**
@@ -111,6 +113,17 @@ public class GrafoNoDirigido<T extends Comparable<T>, V extends Comparable<V>> {
 		validateVertex(v);
 		return tableVertex.get(v).getAdjacencyListSize();
 	}
+	public boolean uncheck(){
+		if(tableVertex.darNumeroElementos()!=0){
+			Iterator<T>iter= tableVertex.keys().iterator();
+			while(iter.hasNext()){
+				T idActualvertex = iter.next();
+				tableVertex.get(idActualvertex).uncheck();
+			}
+			return true;
+		}
+		return false;
+	}
 
 	public Vertex<T,V> getVertex(T idVertex){
 		return tableVertex.get(idVertex);
@@ -118,6 +131,27 @@ public class GrafoNoDirigido<T extends Comparable<T>, V extends Comparable<V>> {
 	public double getEdgeCostByID(T edgeID){
 		return redBlackEdgeTree.get(edgeID).getCost();
 	}
+	public Edge<T,V> getEdgeByID(T ID){
+		return redBlackEdgeTree.get(ID);
+	}
+	public Edge<T,V> getEdgeByVertex(T idVertexIni, T idVertexFin){
+		validateVertex(idVertexFin);
+		validateVertex(idVertexIni);
+		Vertex<T,V> VIni=tableVertex.get(idVertexIni);
+		Vertex<T,V> VFin=tableVertex.get(idVertexFin);
+		Iterator<Edge<T,V>>iter = VIni.getAdjacencyList().iterator();
+
+		while(iter.hasNext())
+		{
+			Edge<T,V>actual=iter.next();
+			if(actual.getFinalVertex().compareTo(VFin)==0)
+			{
+				return actual;
+			}
+		}
+		return null;
+	}
+
 	public double getCostArc(T idVertexIni, T idVertexFin) 
 	{
 		validateVertex(idVertexIni);
@@ -136,6 +170,16 @@ public class GrafoNoDirigido<T extends Comparable<T>, V extends Comparable<V>> {
 		}
 
 		return -1.0;
+	}
+	public void setEdgeCostID(T id, double cost){
+		Edge<T,V>edge= redBlackEdgeTree.get(id);
+		if(edge!=null)
+			edge.changeCost(cost);
+	}
+	public void setEdgeCostVertex(T idIniVertex,T finalVertex, double cost){
+		validateVertex(idIniVertex);
+		validateVertex(finalVertex);
+		getEdgeByVertex(idIniVertex, finalVertex).changeCost(cost);
 	}
 
 
