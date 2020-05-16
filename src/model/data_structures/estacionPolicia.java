@@ -10,6 +10,8 @@ public class estacionPolicia implements Comparable<estacionPolicia>{
 	private String epoServicio;
 	private String epoNombre;
 	private String epoIdentifi;
+	private double latitude;
+	private double longitude;
 	
 	
 	public estacionPolicia(int id2, String pDesc, String pDir_Sitio, String Latitud, String Longitud, String pServicio, String pNombre, String pIdentifi) {
@@ -22,10 +24,14 @@ public class estacionPolicia implements Comparable<estacionPolicia>{
 		epoServicio= pServicio;
 		epoNombre= pNombre;
 		epoIdentifi= pIdentifi;
+		latitude = Double.parseDouble(Latitud);
+		longitude = Double.parseDouble(Longitud);
+
+		
 		
 	}
 	
-	public String getid(){
+	public int getId(){
 		return id;
 	}
 	public String getDescription(){
@@ -37,7 +43,7 @@ public class estacionPolicia implements Comparable<estacionPolicia>{
 	public String getlatitude(){
 		return epoLatitude;
 	}
-	public String getLongitude(){
+	public String getlongitude(){
 		return epoLongitude;
 	}
 	public String getService(){
@@ -49,7 +55,12 @@ public class estacionPolicia implements Comparable<estacionPolicia>{
 	public String getIdentifier(){
 		return epoIdentifi;
 	}
-	
+	public double getLatitude(){
+		return latitude;
+	}
+	public double getLongitude(){
+		return longitude;
+	}
 	
 	
 	

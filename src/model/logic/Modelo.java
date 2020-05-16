@@ -2,6 +2,8 @@ package model.logic;
 
 
 
+import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.text.ParseException;
@@ -10,10 +12,13 @@ import java.util.Date;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.stream.JsonReader;
 
 import model.data_structures.Comparendo;
+import model.data_structures.GeographicPoint;
+import model.data_structures.GrafoNoDirigido;
 import model.data_structures.Haversine;
 import model.data_structures.RedBlackBST;
 import model.data_structures.estacionPolicia;
@@ -30,8 +35,8 @@ public class Modelo
 
 	private RedBlackBST<Integer, Comparendo> comparendosRedBlack;
 	private RedBlackBST<Integer, estacionPolicia> estacionesPolRedBlack;
-
-
+	private GrafoNoDirigido<Integer, GeographicPoint> graphRead;
+	private GrafoNoDirigido<Integer, GeographicPoint> graphWrite;
 	/**
 	 * Constructor del modelo del mundo con capacidad dada
 	 * @param tamano
@@ -40,45 +45,29 @@ public class Modelo
 	{
 		comparendosRedBlack= new RedBlackBST<Integer, Comparendo>();
 		estacionesPolRedBlack = new RedBlackBST<Integer, estacionPolicia>();
+		graphRead = new GrafoNoDirigido<Integer, GeographicPoint>(200000);
+		graphWrite = new GrafoNoDirigido<Integer, GeographicPoint>(200000);
 	}
 
 
 
-	public void cargarInfoEstacionesPolicia() throws ParseException{
+	public void cargarInfoEstacionesPolicia(String pPath) throws ParseException{
 		try {
 			////// tesing
-			String path = "./data/Comparendos_DEI_2018_Bogotá_D.C_small.geojson";
+			String path = pPath;
 			JsonReader reader;
 			reader = new JsonReader(new FileReader(path));
 			JsonElement elem = JsonParser.parseReader(reader);
 			JsonArray ja = elem.getAsJsonObject().get("features").getAsJsonArray();
 			for(JsonElement e: ja)
 			{
-				int id = e.getAsJsonObject().get("properties").getAsJsonObject().get("OBJECTID").getAsInt();
-				String EPOCOD_PLAN = e.getAsJsonObject().get("properties").getAsJsonObject().get("EPOCOD_PLAN").getAsString();
-				String EPOCOD_ENT= e.getAsJsonObject().get("properties").getAsJsonObject().get("EPOCOD_ENT").getAsString();
-				String EPOCOD_PROY = e.getAsJsonObject().get("properties").getAsJsonObject().get("EPOCOD_PROY").getAsString();
-				String EPOANIO_GEO=e.getAsJsonObject().get("properties").getAsJsonObject().get("EPOANIO_GEO").getAsString();
-				String EPOFECHA_INI=e.getAsJsonObject().get("properties").getAsJsonObject().get("EPOFECHA_INI").getAsString();
-				String EPOFECHA_FIN = e.getAsJsonObject().get("properties").getAsJsonObject().get("EPOFECHA_FIN").getAsString();
+				int id =e.getAsJsonObject().get("properties").getAsJsonObject().get("OBJECTID").getAsInt();
 				String EPODESCRIP = e.getAsJsonObject().get("properties").getAsJsonObject().get("EPODESCRIP").getAsString();
-				String EPOEST_PROY = e.getAsJsonObject().get("properties").getAsJsonObject().get("EPOEST_PROY").getAsString();
-				String EPOINTERV_ESP= e.getAsJsonObject().get("properties").getAsJsonObject().get("EPOINTERV_ESP").getAsString();
 				String EPODIR_SITIO= e.getAsJsonObject().get("properties").getAsJsonObject().get("EPODIR_SITIO").getAsString();
 				String EPOLATITUD= e.getAsJsonObject().get("properties").getAsJsonObject().get("EPOLATITUD").getAsString();
-				String EPOLONGITU= e.getAsJsonObject().get("properties").getAsJsonObject().get("EPOONGITU").getAsString();
+				String EPOLONGITU= e.getAsJsonObject().get("properties").getAsJsonObject().get("EPOLONGITU").getAsString();
 				String EPOSERVICIO= e.getAsJsonObject().get("properties").getAsJsonObject().get("EPOSERVICIO").getAsString();
-				String EPOHORARIO= e.getAsJsonObject().get("properties").getAsJsonObject().get("EPOHORARIO").getAsString();
 				String EPOTELEFON = e.getAsJsonObject().get("properties").getAsJsonObject().get("EPOTELEFON").getAsString();
-				String EPOCELECTR = e.getAsJsonObject().get("properties").getAsJsonObject().get("EPOCELECTR").getAsString();
-				String EPOCONTACT = e.getAsJsonObject().get("properties").getAsJsonObject().get("EPOCONTACT").getAsString();
-				String EPOPWEB = e.getAsJsonObject().get("properties").getAsJsonObject().get("EPOPWEB").getAsString();
-				String EPOIUUPLAN = e.getAsJsonObject().get("properties").getAsJsonObject().get("EPOIUUPLAN").getAsString();
-				String EPOIUSCATA = e.getAsJsonObject().get("properties").getAsJsonObject().get("EPOIUSCATA").getAsString();
-				String EPOIULOCAL = e.getAsJsonObject().get("properties").getAsJsonObject().get("EPOIULOCAL").getAsString();
-				String EPOEASOCIA = e.getAsJsonObject().get("properties").getAsJsonObject().get("EPOEASOCIA").getAsString();
-				String EPOFUNCION = e.getAsJsonObject().get("properties").getAsJsonObject().get("EPOFUNCION").getAsString();
-				String EPOTEQUIPA = e.getAsJsonObject().get("properties").getAsJsonObject().get("EPOTEQUIPA").getAsString();
 				String EPONOMBRE = e.getAsJsonObject().get("properties").getAsJsonObject().get("EPONOMBRE").getAsString();
 				String EPOIDENTIF = e.getAsJsonObject().get("properties").getAsJsonObject().get("EPOIDENTIF").getAsString();
 				String EPOFECHA_C = e.getAsJsonObject().get("properties").getAsJsonObject().get("EPOFECHA_C").getAsString();
@@ -90,6 +79,55 @@ public class Modelo
 			e.printStackTrace();
 		}
 	}
+	public void cargarInfoVertex(String pPath) throws IOException{
+		File file=new File(pPath);
+		FileReader fr=new FileReader(file);
+		BufferedReader br=new BufferedReader(fr);
+		String line=br.readLine();
+		while(line!=null)
+		{
+			String[] vertex=line.split(",");
+			int objectId=Integer.parseInt(vertex[0].trim());
+			double longitude=Double.parseDouble(vertex[1].trim());
+			double latitude=Double.parseDouble(vertex[2].trim());
+			graphRead.addVertex(objectId, new GeographicPoint(longitude,latitude));
+			line=br.readLine();
+		}
+		br.close();
+		fr.close();
+
+	}
+
+
+	public void cargarInfoEdges(String pPath) throws IOException{
+		File file=new File(pPath);
+		FileReader fr=new FileReader(file);
+		BufferedReader br=new BufferedReader(fr);
+		String line=br.readLine();
+		while(line.contains("#"))
+		{
+			line=br.readLine();
+		}
+		while(line!=null)
+		{
+			String[] edges=line.split(" ");
+			int idVertexInit=Integer.parseInt(edges[0].trim());
+			GeographicPoint geo1=graphRead.getVertex(idVertexInit).getInfo();
+			for(int i=1; i<edges.length;++i)
+			{
+				int idFinalVertex=Integer.parseInt(edges[i].trim());
+				GeographicPoint geo2=graphRead.getVertex(idFinalVertex).getInfo();
+				graphRead.addEdge(idVertexInit, idVertexInit, idFinalVertex, Haversine.distance(geo1.getlatitude(), geo1.getLongitude(), geo2.getlatitude(), geo2.getLongitude()));
+			}
+			line=br.readLine();
+		}
+		br.close();
+		fr.close();
+
+	}
+
+
+
 	public Comparendo cargarInfoComparendos() throws ParseException{
 		Comparendo mayorID1 = null;
 		try {
@@ -135,6 +173,12 @@ public class Modelo
 
 		return mayorID1;
 	}
-	
+	public GrafoNoDirigido<Integer, GeographicPoint> getGraph(){
+		return graphRead;
+	}
+	public RedBlackBST<Integer, estacionPolicia> getEstacionesDePolicia(){
+		return estacionesPolRedBlack;
+	}
+
 
 }

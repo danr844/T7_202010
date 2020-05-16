@@ -273,6 +273,10 @@ public class RedBlackBST < Key extends Comparable<Key>, Value>{
         if (isEmpty()) return new Queue<Key>();
         return keys(min(), maxKey());
     }
+    public Iterable<Value> keysValue(){
+        if (isEmpty()) return new Queue<Value>();
+        return keysValue(min(),maxKey());
+    }
 
     /**
      * Returns all keys in the symbol table in the given range,

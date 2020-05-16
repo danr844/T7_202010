@@ -23,6 +23,7 @@ public class GrafoNoDirigido<T extends Comparable<T>, V extends Comparable<V>> {
 		vertexNumber=0;
 		edgesNumber=0;
 		tableVertex = new SeparateChainingHT<T, Vertex<T,V>>(V);
+		redBlackEdgeTree = new RedBlackBST<T, Edge<T,V>>();
 
 	}
 
@@ -32,7 +33,7 @@ public class GrafoNoDirigido<T extends Comparable<T>, V extends Comparable<V>> {
 	 *
 	 * @return the number of vertices in this graph
 	 */
-	public int VertexSize() {
+	public int getVertexSize() {
 		return vertexNumber;
 	}
 
@@ -41,7 +42,7 @@ public class GrafoNoDirigido<T extends Comparable<T>, V extends Comparable<V>> {
 	 *
 	 * @return the number of edges in this graph
 	 */
-	public int edgeSize() {
+	public int getEdgeSize() {
 		return edgesNumber;
 	}
 
